@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Dépouillement Estime de Soi{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% if current_user.is_authenticated %}
+  <header class="topbar">
+    <div class="topbar-title">Dépouillement — Estime de Soi</div>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Élèves</a>
+      <a href="{{ url_for('student_new') }}">+ Nouvelle fiche</a>
+      <a href="{{ url_for('export_xlsx') }}">Export Excel</a>
+      {% if current_user.role == 'admin' %}
+      <a href="{{ url_for('admin_import') }}">Importer Excel</a>
+      <a href="{{ url_for('admin_users') }}">Utilisateurs</a>
+      {% endif %}
+      <span class="user-info">{{ current_user.username }} ({{ current_user.role }})</span>
+      <a href="{{ url_for('logout') }}">Déconnexion</a>
+    </nav>
+  </header>
+  {% endif %}
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

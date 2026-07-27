@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Connexion{% endblock %}
+{% block content %}
+<div class="login-box">
+  <h1>Connexion</h1>
+  <form method="post">
+    <label>Nom d'utilisateur
+      <input type="text" name="username" required autofocus>
+    </label>
+    <label>Mot de passe
+      <input type="password" name="password" required>
+    </label>
+    <button type="submit">Se connecter</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ student['nom'] }} {{ student['prenom'] }}{% endblock %}
+{% block content %}
+<h1>{{ student['nom'] }} {{ student['prenom'] }}</h1>
+
+<table class="summary-table">
+  <tr><th>Âge</th><td>{{ student['age'] }}</td><th>Sexe</th><td>{{ student['sexe'] }}</td></tr>
+  <tr><th>Classe</th><td>{{ student['classe'] }}</td><th>Établissement</th><td>{{ student['etablissement'] or '' }}</td></tr>
+  <tr><th>Situation familiale</th><td colspan="3">{{ student['situation_familiale'] or '' }}</td></tr>
+  <tr><th>Total Oui (Sect. II)</th><td>{{ student['Total_Oui_II'] }} / 40</td>
+      <th>Total Vrai (SEI)</th><td>{{ student['Total_Vrai_B'] }} / 15</td></tr>
+  <tr><th>PP</th><td>{{ student['PP'] }}</td><th>PN</th><td>{{ student['PN'] }}</td></tr>
+</table>
+
+<h2>II. Estime de soi de l'élève</h2>
+<table class="answers-table">
+  {% for code, libelle in section_ii %}
+  <tr><td>{{ loop.index }}. {{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>III. Perception des capacités scolaires</h2>
+<table class="answers-table">
+  {% for code, libelle, typ, choices in section_iii %}
+  <tr><td>{{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>IV. Orientation scolaire</h2>
+<table class="answers-table">
+  {% for code, libelle, typ, choices in section_iv %}
+  <tr><td>{{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>V. Influence de l'estime de soi sur l'orientation</h2>
+<table class="answers-table">
+  {% for code, libelle in section_v %}
+  <tr><td>{{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>B. Test d'Estime de Soi (SEI)</h2>
+<table class="answers-table">
+  {% for code, libelle in section_b %}
+  <tr><td>{{ loop.index }}. {{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  {% endfor %}
+</table>
+
+{% if student['remarques'] %}
+<h2>Remarques</h2>
+<p>{{ student['remarques'] }}</p>
+{% endif %}
+
+<p><a href="{{ url_for('dashboard') }}">&larr; Retour à la liste</a></p>
+{% endblock %}

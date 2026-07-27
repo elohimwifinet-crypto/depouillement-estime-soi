@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Importer depuis Excel{% endblock %}
+{% block content %}
+<h1>Importer les anciennes fiches depuis Excel</h1>
+<p>
+  Sélectionne le fichier <code>Depouillement_Enquete_EstimeDeSoi.xlsx</code>
+  (celui qui contenait déjà les fiches saisies manuellement). L'onglet
+  <strong>Données</strong> sera lu et chaque ligne remplie sera importée comme
+  nouvelle fiche.
+</p>
+<form method="post" enctype="multipart/form-data" class="student-form" style="max-width:500px">
+  <label>Fichier Excel (.xlsx)
+    <input type="file" name="xlsx_file" accept=".xlsx" required>
+  </label>
+  <button type="submit" class="btn btn-primary">Importer</button>
+</form>
+{% endblock %}

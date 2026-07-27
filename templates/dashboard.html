@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Élèves{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Fiches élèves ({{ students|length }})</h1>
+  <a class="btn" href="{{ url_for('student_new') }}">+ Nouvelle fiche</a>
+</div>
+
+{% if students %}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Nom</th><th>Prénom</th><th>Âge</th><th>Sexe</th><th>Classe</th>
+      <th>Établissement</th><th>Ajouté le</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td><a href="{{ url_for('student_view', student_id=s['id']) }}">{{ s['nom'] }}</a></td>
+      <td>{{ s['prenom'] }}</td>
+      <td>{{ s['age'] }}</td>
+      <td>{{ s['sexe'] }}</td>
+      <td>{{ s['classe'] }}</td>
+      <td>{{ s['etablissement'] or '' }}</td>
+      <td>{{ s['created_at'] }}</td>
+      <td>
+        {% if current_user.role == 'admin' %}
+        <form method="post" action="{{ url_for('student_delete', student_id=s['id']) }}"
+              onsubmit="return confirm('Supprimer cette fiche ?');" style="display:inline">
+          <button type="submit" class="btn-danger-small">Suppr.</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Aucune fiche pour l'instant. <a href="{{ url_for('student_new') }}">Ajoute la première.</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle fiche élève{% endblock %}
+{% block content %}
+<h1>Nouvelle fiche élève</h1>
+<form method="post" class="student-form">
+
+  <fieldset>
+    <legend>I. Informations générales</legend>
+    <div class="grid-2">
+      <label>Nom <input type="text" name="nom" required></label>
+      <label>Prénom <input type="text" name="prenom" required></label>
+      <label>Âge
+        <select name="age" required>
+          <option value="">--</option>
+          {% for a in age_choices %}<option value="{{ a }}">{{ a }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Sexe
+        <select name="sexe" required>
+          <option value="">--</option>
+          {% for s in sexe_choices %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Classe <input type="text" name="classe" placeholder="ex : 3e A"></label>
+      <label>Établissement <input type="text" name="etablissement"></label>
+      <label>Situation familiale
+        <select name="situation_familiale">
+          <option value="">--</option>
+          {% for sf in situation_choices %}<option value="{{ sf }}">{{ sf }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>II. Estime de soi de l'élève (40 items — Oui / Non)</legend>
+    {% for code, libelle in section_ii %}
+    <div class="item-row">
+      <span class="item-label">{{ loop.index }}. {{ libelle }}</span>
+      <span class="item-choices">
+        <label><input type="radio" name="{{ code }}" value="Oui" required> Oui</label>
+        <label><input type="radio" name="{{ code }}" value="Non"> Non</label>
+      </span>
+    </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset>
+    <legend>III. Perception des capacités scolaires</legend>
+    {% for code, libelle, typ, choices in section_iii %}
+    <div class="item-row">
+      <span class="item-label">{{ libelle }}</span>
+      <span class="item-choices">
+        {% if typ == 'choice' %}
+          {% for c in choices %}
+          <label><input type="radio" name="{{ code }}" value="{{ c }}"> {{ c }}</label>
+          {% endfor %}
+        {% else %}
+          <label><input type="radio" name="{{ code }}" value="Oui"> Oui</label>
+          <label><input type="radio" name="{{ code }}" value="Non"> Non</label>
+        {% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset>
+    <legend>IV. Orientation scolaire</legend>
+    {% for code, libelle, typ, choices in section_iv %}
+    <div class="item-row">
+      <span class="item-label">{{ libelle }}</span>
+      <span class="item-choices">
+        {% if typ == 'choice' %}
+          {% for c in choices %}
+          <label><input type="radio" name="{{ code }}" value="{{ c }}"> {{ c }}</label>
+          {% endfor %}
+        {% else %}
+          <label><input type="radio" name="{{ code }}" value="Oui"> Oui</label>
+          <label><input type="radio" name="{{ code }}" value="Non"> Non</label>
+        {% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset>
+    <legend>V. Influence de l'estime de soi sur l'orientation (Oui / Non)</legend>
+    {% for code, libelle in section_v %}
+    <div class="item-row">
+      <span class="item-label">{{ libelle }}</span>
+      <span class="item-choices">
+        <label><input type="radio" name="{{ code }}" value="Oui"> Oui</label>
+        <label><input type="radio" name="{{ code }}" value="Non"> Non</label>
+      </span>
+    </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset>
+    <legend>B. Test d'Estime de Soi (SEI) — 15 affirmations (Vrai / Faux)</legend>
+    {% for code, libelle in section_b %}
+    <div class="item-row">
+      <span class="item-label">{{ loop.index }}. {{ libelle }}</span>
+      <span class="item-choices">
+        <label><input type="radio" name="{{ code }}" value="Vrai"> Vrai</label>
+        <label><input type="radio" name="{{ code }}" value="Faux"> Faux</label>
+      </span>
+    </div>
+    {% endfor %}
+    <div class="grid-2" style="margin-top:1rem">
+      <label>Score PP (positif, noté par l'évaluateur) <input type="number" name="PP" min="0"></label>
+      <label>Score PN (négatif, noté par l'évaluateur) <input type="number" name="PN" min="0"></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Remarques</legend>
+    <textarea name="remarques" rows="4" placeholder="Incohérences, ambiguïtés, ratures, réponses corrigées..."></textarea>
+  </fieldset>
+
+  <button type="submit" class="btn btn-primary">Enregistrer la fiche</button>
+</form>
+{% endblock %}

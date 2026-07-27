@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Utilisateurs{% endblock %}
+{% block content %}
+<h1>Gestion des utilisateurs</h1>
+
+<table class="data-table">
+  <thead><tr><th>Nom d'utilisateur</th><th>Rôle</th><th>Créé le</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr><td>{{ u['username'] }}</td><td>{{ u['role'] }}</td><td>{{ u['created_at'] }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Ajouter un utilisateur</h2>
+<form method="post" class="student-form" style="max-width:400px">
+  <label>Nom d'utilisateur <input type="text" name="username" required></label>
+  <label>Mot de passe <input type="password" name="password" required></label>
+  <label>Rôle
+    <select name="role">
+      <option value="enqueteur">Enquêteur</option>
+      <option value="admin">Admin</option>
+    </select>
+  </label>
+  <button type="submit" class="btn btn-primary">Créer</button>
+</form>
+{% endblock %}
