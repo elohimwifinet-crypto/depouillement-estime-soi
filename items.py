@@ -56,7 +56,7 @@ SECTION_III = [
     ("III_1", "Comment évalues-tu ton niveau scolaire ?", "choice",
         ["Faible", "Moyen", "Bon", "Très bon"]),
     ("III_2", "Penses-tu que tes résultats influencent ton orientation ?", "oui_non", None),
-    ("III_3", "As-tu confiance en ta réussite dans la filière que tu souhaites ?", "oui_non", None),
+    ("III_3", "As-tu confiance en ta réussite dans la filière que tu souhaites ?", "choice", ["Oui", "Non", "Je ne sais pas"]),
 ]
 
 # Section IV - Orientation scolaire (12 questions, formats variés)
@@ -140,5 +140,5 @@ def build_dictionnaire_rows():
         rows.append((code, "V - Influence de l'estime de soi sur l'orientation", n, libelle))
     for code, libelle in SECTION_B:
         n = int(code.split("_")[1])
-        rows.append((code, "B - Test d'estime de soi (SEI)", n, libelle))
+        rows.append((code, "B - Test d'estime de soi (SEI)", n, libelle)	)
     return rows

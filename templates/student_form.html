@@ -49,7 +49,7 @@
     <legend>III. Perception des capacités scolaires</legend>
     {% for code, libelle, typ, choices in section_iii %}
     <div class="item-row">
-      <span class="item-label">{{ libelle }}</span>
+      <span class="item-label">{{ loop.index }}. {{ libelle }}</span>
       <span class="item-choices">
         {% if typ == 'choice' %}
           {% for c in choices %}
@@ -68,7 +68,7 @@
     <legend>IV. Orientation scolaire</legend>
     {% for code, libelle, typ, choices in section_iv %}
     <div class="item-row">
-      <span class="item-label">{{ libelle }}</span>
+      <span class="item-label">{{ loop.index }}. {{ libelle }}</span>
       <span class="item-choices">
         {% if typ == 'choice' %}
           {% for c in choices %}
@@ -87,7 +87,7 @@
     <legend>V. Influence de l'estime de soi sur l'orientation (Oui / Non)</legend>
     {% for code, libelle in section_v %}
     <div class="item-row">
-      <span class="item-label">{{ libelle }}</span>
+      <span class="item-label">{{ loop.index }}. {{ libelle }}</span>
       <span class="item-choices">
         <label><input type="radio" name="{{ code }}" value="Oui"> Oui</label>
         <label><input type="radio" name="{{ code }}" value="Non"> Non</label>
@@ -107,15 +107,6 @@
       </span>
     </div>
     {% endfor %}
-    <div class="grid-2" style="margin-top:1rem">
-      <label>Score PP (positif, noté par l'évaluateur) <input type="number" name="PP" min="0"></label>
-      <label>Score PN (négatif, noté par l'évaluateur) <input type="number" name="PN" min="0"></label>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>Remarques</legend>
-    <textarea name="remarques" rows="4" placeholder="Incohérences, ambiguïtés, ratures, réponses corrigées..."></textarea>
   </fieldset>
 
   <button type="submit" class="btn btn-primary">Enregistrer la fiche</button>

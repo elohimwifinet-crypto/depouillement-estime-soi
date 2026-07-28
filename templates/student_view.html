@@ -22,21 +22,21 @@
 <h2>III. Perception des capacités scolaires</h2>
 <table class="answers-table">
   {% for code, libelle, typ, choices in section_iii %}
-  <tr><td>{{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  <tr><td>{{ loop.index }}. {{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
   {% endfor %}
 </table>
 
 <h2>IV. Orientation scolaire</h2>
 <table class="answers-table">
   {% for code, libelle, typ, choices in section_iv %}
-  <tr><td>{{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  <tr><td>{{ loop.index }}. {{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
   {% endfor %}
 </table>
 
 <h2>V. Influence de l'estime de soi sur l'orientation</h2>
 <table class="answers-table">
   {% for code, libelle in section_v %}
-  <tr><td>{{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
+  <tr><td>{{ loop.index }}. {{ libelle }}</td><td class="answer">{{ student[code] or '—' }}</td></tr>
   {% endfor %}
 </table>
 
