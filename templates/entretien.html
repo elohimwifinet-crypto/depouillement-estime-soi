@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Guide d'entretien{% endblock %}
+{% block content %}
+<h2>{% if modifier %}Modifier l'entretien{% else %}Nouvel entretien{% endif %}</h2>
+
+<form method="POST" class="form-card">
+  <div class="form-group">
+    <label for="nom_eleve">Nom de l'eleve</label>
+    <input type="text" id="nom_eleve" name="nom_eleve" value="{{ ent.nom_eleve if ent else '' }}" required>
+  </div>
+
+  {% for key, question in questions %}
+  <div class="form-group">
+    <label for="{{ key }}">{{ question }}</label>
+    <textarea id="{{ key }}" name="{{ key }}" rows="3">{{ reponses[key] if reponses and key in reponses else '' }}</textarea>
+  </div>
+  {% endfor %}
+
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">{% if modifier %}Enregistrer{% else %}Enregistrer l'entretien{% endif %}</button>
+    <a href="{{ url_for('admin_entretiens') }}" class="btn-secondary">Retour a la liste</a>
+  </div>
+</form>
+{% endblock %}

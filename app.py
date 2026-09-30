@@ -337,6 +337,99 @@ def admin_users():
     return render_template("admin_users.html", users=users)
 
 
+
+
+# ==================== ENTRE-TIENS ====================
+
+def can_rename_required(fn):
+    from functools import wraps
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role not in ("admin", "editeur"):
+            abort(403)
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+@app.route("/entretien", methods=["GET", "POST"])
+@login_required
+def entretien():
+    conn = db.get_db()
+    from items import GUIDE_ENTRETIEN
+    if request.method == "POST":
+        nom_eleve = request.form.get("nom_eleve", "").strip()
+        reponses = {}
+        for key, _ in GUIDE_ENTRETIEN:
+            reponses[key] = request.form.get(key, "").strip()
+        if nom_eleve:
+            conn.execute(
+                "INSERT INTO entretiens (date_entretien, nom_eleve, reponses_json) VALUES (datetime('now'), ?, ?)",
+                (nom_eleve, json.dumps(reponses, ensure_ascii=False)),
+            )
+            conn.commit()
+            flash("Entretien enregistre.", "success")
+            return redirect(url_for("entretien"))
+    return render_template("entretien.html", questions=GUIDE_ENTRETIEN)
+
+
+@app.route("/admin/entretiens")
+@login_required
+def admin_entretiens():
+    conn = db.get_db()
+    entretiens = conn.execute(
+        "SELECT id, date_entretien, nom_eleve FROM entretiens ORDER BY LOWER(TRIM(nom_eleve)) ASC, id DESC"
+    ).fetchall()
+    return render_template("admin_entretiens.html", entretiens=entretiens)
+
+
+@app.route("/admin/renommer_entretien/<int:ent_id>", methods=["POST"])
+@login_required
+@can_rename_required
+def renommer_entretien(ent_id):
+    nom = request.form.get("nom_eleve", "").strip()
+    if nom:
+        conn = db.get_db()
+        conn.execute("UPDATE entretiens SET nom_eleve=? WHERE id=?", (nom, ent_id))
+        conn.commit()
+    return redirect(url_for("admin_entretiens"))
+
+
+@app.route("/admin/supprimer_entretien/<int:ent_id>", methods=["POST"])
+@login_required
+@admin_required
+def supprimer_entretien(ent_id):
+    conn = db.get_db()
+    conn.execute("DELETE FROM entretiens WHERE id=?", (ent_id,))
+    conn.commit()
+    flash("Entretien supprime.", "success")
+    return redirect(url_for("admin_entretiens"))
+
+
+@app.route("/entretien/modifier/<int:ent_id>", methods=["GET", "POST"])
+@login_required
+@admin_required
+def modifier_entretien(ent_id):
+    conn = db.get_db()
+    from items import GUIDE_ENTRETIEN
+    ent = conn.execute("SELECT * FROM entretiens WHERE id=?", (ent_id,)).fetchone()
+    if not ent:
+        abort(404)
+    if request.method == "POST":
+        nom_eleve = request.form.get("nom_eleve", "").strip()
+        reponses = {}
+        for key, _ in GUIDE_ENTRETIEN:
+            reponses[key] = request.form.get(key, "").strip()
+        conn.execute(
+            "UPDATE entretiens SET nom_eleve=?, reponses_json=? WHERE id=?",
+            (nom_eleve, json.dumps(reponses, ensure_ascii=False), ent_id),
+        )
+        conn.commit()
+        flash("Entretien modifie.", "success")
+        return redirect(url_for("admin_entretiens"))
+    reponses = json.loads(ent["reponses_json"]) if ent["reponses_json"] else {}
+    return render_template("entretien.html", questions=GUIDE_ENTRETIEN, ent=ent, reponses=reponses, modifier=True)
+
+
 @app.cli.command("create-admin")
 def create_admin_command():
     """Commande CLI pour créer le premier compte admin : flask create-admin"""

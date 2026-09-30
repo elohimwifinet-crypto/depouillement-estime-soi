@@ -142,3 +142,19 @@ def build_dictionnaire_rows():
         n = int(code.split("_")[1])
         rows.append((code, "B - Test d'estime de soi (SEI)", n, libelle)	)
     return rows
+
+# Guide d'entretien (questions ouvertes pour l'enqueteur)
+GUIDE_ENTRETIEN = [
+    ("q1", "Comment te vois-tu comme eleve ?"),
+    ("q2a", "Quelles sont tes matieres preferees ?"),
+    ("q2b", "Quelles sont les matieres que tu trouves difficiles ?"),
+    ("q2c", "Pourquoi ces matieres sont-elles difficiles ?"),
+    ("q3a", "Te sens-tu parfois decourage(e) ou inutile ?"),
+    ("q3b", "Y a-t-il des comparaisons ou des remarques qui te decouragent ?"),
+    ("q4a", "Quels sont tes projets ou tes reves ?"),
+    ("q4b", "Quels sont les obstacles que tu rencontres ?"),
+    ("q5", "A qui demandes-tu conseil pour tes choix scolaires ?"),
+    ("q6", "As-tu confiance en toi pour reussir ?"),
+    ("q7", "Quels conseils donnerais-tu a un ami qui doute de lui ?"),
+    ("q8", "As-tu une idee de ce que tu veux faire plus tard ?"),
+]

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Entretiens{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Entretiens enregistres ({{ entretiens|length }})</h2>
+  <a href="{{ url_for('entretien') }}" class="btn-primary">+ Nouvel entretien</a>
+</div>
+
+{% if entretiens %}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Date</th>
+      <th>Nom de l'eleve</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for e in entretiens %}
+    <tr>
+      <td>{{ e.id }}</td>
+      <td>{{ e.date_entretien }}</td>
+      <td>
+        {% if current_user.role in ('admin', 'editeur') %}
+        <form method="POST" action="{{ url_for('renommer_entretien', ent_id=e.id) }}" style="display:flex;gap:6px;align-items:center;">
+          <input type="text" name="nom_eleve" value="{{ e.nom_eleve or '' }}" placeholder="Saisir le nom..." style="padding:4px 8px;border:1px solid #ccc;border-radius:4px;">
+          <button type="submit" class="btn-small btn-success">OK</button>
+        </form>
+        {% else %}
+        {{ e.nom_eleve or '(non nomme)' }}
+        {% endif %}
+      </td>
+      <td>
+        {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('modifier_entretien', ent_id=e.id) }}" class="btn-small btn-primary">Modifier</a>
+        <form method="POST" action="{{ url_for('supprimer_entretien', ent_id=e.id) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet entretien ?');">
+          <button type="submit" class="btn-small btn-danger">Supprimer</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Aucun entretien enregistre.</p>
+<p><a href="{{ url_for('entretien') }}" class="btn-primary">Creer le premier entretien</a></p>
+{% endif %}
+{% endblock %}

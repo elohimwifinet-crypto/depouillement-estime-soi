@@ -14,6 +14,10 @@
       <a href="{{ url_for('dashboard') }}">Élèves</a>
       <a href="{{ url_for('student_new') }}">+ Nouvelle fiche</a>
       <a href="{{ url_for('export_xlsx') }}">Export Excel</a>
+      <a href="{{ url_for('entretien') }}">+ Entretien</a>
+      {% if current_user.role in ('admin', 'editeur') %}
+      <a href="{{ url_for('admin_entretiens') }}">Entretiens</a>
+      {% endif %}
       {% if current_user.role == 'admin' %}
       <a href="{{ url_for('admin_import') }}">Importer Excel</a>
       <a href="{{ url_for('admin_users') }}">Utilisateurs</a>
