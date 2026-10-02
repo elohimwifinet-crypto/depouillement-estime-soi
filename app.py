@@ -82,8 +82,8 @@ def logout():
 def dashboard():
     conn = db.get_db()
     students = conn.execute(
-        "SELECT id, nom, prenom, age, sexe, classe, etablissement, created_at "
-        "FROM students ORDER BY created_at DESC"
+        "SELECT id, nom, prenom, age, sexe, classe, etablissement, date_soumission AS created_at "
+        "FROM reponses ORDER BY date_soumission DESC"
     ).fetchall()
     return render_template("dashboard.html", students=students)
 
@@ -152,10 +152,58 @@ def student_new():
 @app.route("/students/<int:student_id>")
 @login_required
 def student_view(student_id):
+    import json as _json
     conn = db.get_db()
-    student = conn.execute("SELECT * FROM students WHERE id = ?", (student_id,)).fetchone()
-    if not student:
+    row = conn.execute("SELECT * FROM reponses WHERE id = ?", (student_id,)).fetchone()
+    if not row:
         abort(404)
+
+    # Reconstruire un dict compatible avec le template student_view.html
+    student = dict(row)
+
+    # Section II : liste de 40 items oui/non
+    s2 = _json.loads(row["section2_json"]) if row["section2_json"] else []
+    for i, item in enumerate(s2, start=1):
+        student["II_" + str(i)] = item.get("reponse", "")
+
+    # Section III
+    student["III_1"] = row["section3_niveau"] or ""
+    student["III_2"] = row["section3_q2"] or ""
+    student["III_3"] = row["section3_q3"] or ""
+
+    # Section IV : dict {q1:..., q2:..., ...}
+    s4 = _json.loads(row["section4_json"]) if row["section4_json"] else {}
+    for i in range(1, 13):
+        student["IV_" + str(i)] = s4.get("q" + str(i), "")
+
+    # Section V : liste
+    s5 = _json.loads(row["section5_json"]) if row["section5_json"] else []
+    for i, item in enumerate(s5, start=1):
+        student["V_" + str(i)] = item.get("reponse", "")
+
+    # Section B (SEI) : liste
+    sb = _json.loads(row["sei_json"]) if row["sei_json"] else []
+    for i, item in enumerate(sb, start=1):
+        student["B_" + str(i)] = item.get("reponse", "")
+
+    # Totaux
+    student["Total_Oui_II"] = row["score_estime_soi"] or 0
+
+    # Calculer Total_Vrai_B : compter les reponses conformes a la polarite
+    total_vrai_b = 0
+    for item in sb:
+        pol = item.get("polarite", "")
+        rep = item.get("reponse", "").lower()
+        if pol == "vrai_pos" and rep == "vrai":
+            total_vrai_b += 1
+        elif pol == "vrai_neg" and rep == "faux":
+            total_vrai_b += 1
+    student["Total_Vrai_B"] = total_vrai_b
+
+    student["PP"] = 0
+    student["PN"] = 0
+    student["remarques"] = ""
+
     return render_template(
         "student_view.html", student=student,
         section_ii=SECTION_II, section_iii=SECTION_III, section_iv=SECTION_IV,
@@ -182,8 +230,49 @@ def export_xlsx():
     import openpyxl
     from openpyxl.utils import get_column_letter
 
+    import json as _json
     conn = db.get_db()
-    rows = conn.execute("SELECT * FROM students ORDER BY id").fetchall()
+    raw_rows = conn.execute("SELECT * FROM reponses ORDER BY id").fetchall()
+
+    # Reconstruire chaque ligne pour qu'elle contienne les cles II_x, III_x, IV_x, V_x, B_x
+    rows = []
+    for row in raw_rows:
+        student = dict(row)
+        # Section II
+        s2 = _json.loads(row["section2_json"]) if row["section2_json"] else []
+        for i, item in enumerate(s2, start=1):
+            student["II_" + str(i)] = item.get("reponse", "")
+        # Section III
+        student["III_1"] = row["section3_niveau"] or ""
+        student["III_2"] = row["section3_q2"] or ""
+        student["III_3"] = row["section3_q3"] or ""
+        # Section IV
+        s4 = _json.loads(row["section4_json"]) if row["section4_json"] else {}
+        for i in range(1, 13):
+            student["IV_" + str(i)] = s4.get("q" + str(i), "")
+        # Section V
+        s5 = _json.loads(row["section5_json"]) if row["section5_json"] else []
+        for i, item in enumerate(s5, start=1):
+            student["V_" + str(i)] = item.get("reponse", "")
+        # Section B (SEI)
+        sb = _json.loads(row["sei_json"]) if row["sei_json"] else []
+        for i, item in enumerate(sb, start=1):
+            student["B_" + str(i)] = item.get("reponse", "")
+        # Totaux
+        student["Total_Oui_II"] = row["score_estime_soi"] or 0
+        tvb = 0
+        for item in sb:
+            pol = item.get("polarite", "")
+            rep = item.get("reponse", "").lower()
+            if pol == "vrai_pos" and rep == "vrai":
+                tvb += 1
+            elif pol == "vrai_neg" and rep == "faux":
+                tvb += 1
+        student["Total_Vrai_B"] = tvb
+        student["PP"] = 0
+        student["PN"] = 0
+        student["remarques"] = ""
+        rows.append(student)
 
     wb = openpyxl.Workbook()
 
