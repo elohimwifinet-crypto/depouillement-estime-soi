@@ -105,6 +105,16 @@ SECTION_B = [
     ("B_15", "Je pense que je suis un échec"),
 ]
 
+# Polarite des 15 items SEI Coopersmith (vrai_pos = positif, vrai_neg = negatif)
+# Source : inventaire de Coopersmith
+SEI_POLARITES = {
+    "B_1": "vrai_pos", "B_2": "vrai_pos", "B_3": "vrai_neg",
+    "B_4": "vrai_pos", "B_5": "vrai_pos", "B_6": "vrai_neg",
+    "B_7": "vrai_pos", "B_8": "vrai_neg", "B_9": "vrai_pos",
+    "B_10": "vrai_neg", "B_11": "vrai_pos", "B_12": "vrai_neg",
+    "B_13": "vrai_pos", "B_14": "vrai_pos", "B_15": "vrai_neg",
+}
+
 AGE_CHOICES = ["13-14", "15-16", "17", "17+"]
 SEXE_CHOICES = ["F", "M"]
 SITUATION_FAMILIALE_CHOICES = ["Deux parents", "Un seul parent", "Tuteur / autre"]
@@ -157,4 +167,24 @@ GUIDE_ENTRETIEN = [
     ("q6", "As-tu confiance en toi pour reussir ?"),
     ("q7", "Quels conseils donnerais-tu a un ami qui doute de lui ?"),
     ("q8", "As-tu une idee de ce que tu veux faire plus tard ?"),
+]
+
+
+# Commentaires SEI (un par item du test Coopersmith)
+SEI_COMMENTAIRES = [
+    ("sei_comment_0",  "B1 - Je suis satisfait(e) de moi-meme"),
+    ("sei_comment_1",  "B2 - Je pense que je suis quelqu'un de valeur"),
+    ("sei_comment_2",  "B3 - Je me sens souvent inutile"),
+    ("sei_comment_3",  "B4 - Je suis capable de faire aussi bien que les autres"),
+    ("sei_comment_4",  "B5 - Je me sens fier(e) de moi"),
+    ("sei_comment_5",  "B6 - Je doute souvent de moi-meme"),
+    ("sei_comment_6",  "B7 - Je me sens aime(e) par ma famille"),
+    ("sei_comment_7",  "B8 - Je me sens rejete(e) par les autres"),
+    ("sei_comment_8",  "B9 - Je reussis ce que j'entreprends"),
+    ("sei_comment_9",  "B10 - Je suis inferieur(e) aux autres"),
+    ("sei_comment_10", "B11 - Je suis confiant(e) en moi"),
+    ("sei_comment_11", "B12 - Je me decourage facilement"),
+    ("sei_comment_12", "B13 - Les autres m'apprecient"),
+    ("sei_comment_13", "B14 - Je me sens important(e) dans ma famille"),
+    ("sei_comment_14", "B15 - Je pense que je suis un echec"),
 ]

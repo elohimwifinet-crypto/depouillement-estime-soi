@@ -6,13 +6,28 @@
 <form method="POST" class="form-card">
   <div class="form-group">
     <label for="nom_eleve">Nom de l'eleve</label>
-    <input type="text" id="nom_eleve" name="nom_eleve" value="{{ ent.nom_eleve if ent else '' }}" required>
+    <input type="text" id="nom_eleve" name="nom_eleve" value="{{ ent['nom_eleve']|default('') if ent else '' }}" required>
   </div>
 
+  <h3 style="color:#1F4E79;border-bottom:2px solid #1F4E79;padding-bottom:6px;margin-top:24px;">Questions ouvertes</h3>
   {% for key, question in questions %}
   <div class="form-group">
     <label for="{{ key }}">{{ question }}</label>
-    <textarea id="{{ key }}" name="{{ key }}" rows="3">{{ reponses[key] if reponses and key in reponses else '' }}</textarea>
+    <textarea id="{{ key }}" name="{{ key }}" rows="3">{{ reponses.get(key, '') if reponses else '' }}</textarea>
+  </div>
+  {% endfor %}
+
+  <h3 style="color:#1F4E79;border-bottom:2px solid #1F4E79;padding-bottom:6px;margin-top:32px;">Commentaires SEI (Coopersmith)</h3>
+  <p style="color:#666;font-size:0.9em;">Pour chaque item du test, indiquez la reponse de l'eleve (vrai/faux) et un commentaire d'entretien.</p>
+
+  {% for key, libelle in sei_commentaires %}
+  <div class="form-group" style="background:#f8f9fb;padding:10px;border-radius:6px;margin-bottom:10px;">
+    <label for="{{ key }}" style="font-weight:bold;">{{ libelle }}</label>
+    <div style="margin:6px 0;">
+      <span style="color:#888;font-size:0.85em;">Reponse eleve : </span>
+      <strong style="color:#1F4E79;">{{ sei_reponses.get(key, '(non disponible)') if sei_reponses else '(non disponible)' }}</strong>
+    </div>
+    <textarea id="{{ key }}" name="{{ key }}" rows="2" placeholder="Commentaire de l'enqueteur...">{{ reponses.get(key, '') if reponses else '' }}</textarea>
   </div>
   {% endfor %}
 
